@@ -3,6 +3,7 @@ package edu.tlabs.api.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,13 +28,18 @@ public class ApiController {
 				
 		LOGGER.info("Retrieve all tasks after Auth with User " + user.getUserName());
 		
+		//TODO: JWT Implementation
 		String jwt = jwtService.getJwt(user);
-		
 		System.out.println("JWT " + jwt);
 		
 		return "HIT";
 	}
 	
-	
+	@GetMapping("/tasks/test")
+	public String testGet(){
+		System.out.println("Test Hit");
+		trackerService.getAllTasks();
+		return "Gateway Hit!";
+	}
 
 }
