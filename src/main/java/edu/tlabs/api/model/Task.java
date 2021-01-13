@@ -6,7 +6,7 @@ public class Task {
 	
 	private Integer taskId;
 	private String taskName;
-	private PriorityTypeEnum priorityTypeEnum;
+	private Priority priorityTypeEnum;
 	private boolean isCompleted;
 	private Date targetCompletionDate;
 	private Date completionDate;
@@ -31,11 +31,11 @@ public class Task {
 		this.taskName = taskName;
 	}
 
-	public PriorityTypeEnum getPriorityTypeEnum() {
+	public Priority getPriorityTypeEnum() {
 		return priorityTypeEnum;
 	}
 
-	public void setPriorityTypeEnum(PriorityTypeEnum priorityTypeEnum) {
+	public void setPriorityTypeEnum(Priority priorityTypeEnum) {
 		this.priorityTypeEnum = priorityTypeEnum;
 	}
 
@@ -70,7 +70,7 @@ public class Task {
 				+ "]";
 	}
 
-	public Task(Integer taskId, String taskName, PriorityTypeEnum priorityTypeEnum, boolean isCompleted,
+	public Task(Integer taskId, String taskName, Priority priorityTypeEnum, boolean isCompleted,
 			Date targetCompletionDate, Date completionDate) {
 		this.taskId = taskId;
 		this.taskName = taskName;
