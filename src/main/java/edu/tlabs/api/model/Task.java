@@ -1,85 +1,50 @@
 package edu.tlabs.api.model;
 
-import java.util.Date;
-
 public class Task {
-	
-	private Integer taskId;
-	private String taskName;
-	private Priority priorityTypeEnum;
-	private boolean isCompleted;
-	private Date targetCompletionDate;
-	private Date completionDate;
-	
-	public Task() {
-	
-	}
-	
-	public Integer getTaskId() {
+
+	private int taskId;
+
+	private String task;
+
+	private boolean completed;
+
+	public int getTaskId() {
 		return taskId;
 	}
 
-	public void setTaskId(Integer taskId) {
+	public void setTaskId(int taskId) {
 		this.taskId = taskId;
 	}
 
-	public String getTaskName() {
-		return taskName;
+	public String getTask() {
+		return task;
 	}
 
-	public void setTaskName(String taskName) {
-		this.taskName = taskName;
-	}
-
-	public Priority getPriorityTypeEnum() {
-		return priorityTypeEnum;
-	}
-
-	public void setPriorityTypeEnum(Priority priorityTypeEnum) {
-		this.priorityTypeEnum = priorityTypeEnum;
+	public void setTask(String task) {
+		this.task = task;
 	}
 
 	public boolean isCompleted() {
-		return isCompleted;
+		return completed;
 	}
 
-	public void setCompleted(boolean isCompleted) {
-		this.isCompleted = isCompleted;
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
 	}
 
-	public Date getTargetCompletionDate() {
-		return targetCompletionDate;
-	}
-
-	public void setTargetCompletionDate(Date targetCompletionDate) {
-		this.targetCompletionDate = targetCompletionDate;
-	}
-
-	public Date getCompletionDate() {
-		return completionDate;
-	}
-
-	public void setCompletionDate(Date completionDate) {
-		this.completionDate = completionDate;
+	public Task(int taskId, String task, boolean completed) {
+		this.taskId = taskId;
+		this.task = task;
+		this.completed = completed;
 	}
 
 	@Override
 	public String toString() {
-		return "Task [id=" + taskId + ", taskName=" + taskName + ", priorityTypeEnum=" + priorityTypeEnum + ", isCompleted="
-				+ isCompleted + ", targetCompletionDate=" + targetCompletionDate + ", completionDate=" + completionDate
-				+ "]";
+		return "Task [taskId=" + taskId + ", task=" + task + ", completed=" + completed + "]";
 	}
 
-	public Task(Integer taskId, String taskName, Priority priorityTypeEnum, boolean isCompleted,
-			Date targetCompletionDate, Date completionDate) {
-		this.taskId = taskId;
-		this.taskName = taskName;
-		this.priorityTypeEnum = priorityTypeEnum;
-		this.isCompleted = isCompleted;
-		this.targetCompletionDate = targetCompletionDate;
-		this.completionDate = completionDate;
+	public Task() {
+
 	}
-	
-	
 
 }

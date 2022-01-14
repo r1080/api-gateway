@@ -4,14 +4,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.tlabs.api.model.JwtResponse;
-import edu.tlabs.api.model.User;
+import edu.tlabs.api.model.Response;
 
 @Service
 public class JwtService {
@@ -21,23 +27,51 @@ public class JwtService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Value("${jwt.service.authenticate}")
-	private String authenticationUrl;
+	@Autowired
+	private ObjectMapper mapper;
 
-	@HystrixCommand(fallbackMethod = "getJwtFallback")
-	public String getJwt(User user) {
+	@Autowired
+	private Environment env;
 
-		LOGGER.info("Calling JWT Service For JWT Token!");
-		ResponseEntity<JwtResponse> response = restTemplate.postForEntity(authenticationUrl, user, JwtResponse.class);
-		LOGGER.info("Token: " + response.getBody().getJwt());
+	@Value("${oauth.token.url}")
+	private String tokenUrl;
 
-		return response.getBody().getJwt();
+	public String authenticateAndGetJWTtoken() {
 
+		HttpHeaders headers = createRequestHeaders();
+		MultiValueMap<String, String> body = createRequestBody();
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(body,headers);
+
+		ResponseEntity<String> responseEntity = restTemplate.postForEntity(tokenUrl, request, String.class);
+		String jwt = getJWT(responseEntity.getBody());
+
+		return jwt;
 	}
 
-	public String getJwtFallback(User user) {
-		LOGGER.info("Retrieve JWT FallBack Method");
-		return "JWT_FALLBACK_TOKEN";
+	private HttpHeaders createRequestHeaders() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setBasicAuth(env.getProperty("service.username"), env.getProperty("service.password"));
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		return headers;
+	}
+
+	private MultiValueMap<String, String> createRequestBody() {
+		MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
+		body.add("username", env.getProperty("authentication.username"));
+		body.add("password", env.getProperty("authentication.password"));
+		body.add("grant_type", env.getProperty("token.granttype"));
+		body.add("scopes", env.getProperty("token.scopes"));
+		return body;
+	}
+
+	private String getJWT(String body) {
+		Response response = null;
+		try {
+			response = mapper.readValue(body, Response.class);
+		} catch (JsonProcessingException e) {
+			LOGGER.error("Error parsing response {}", e.getMessage());
+		}
+		return response.getAccessToken();
 	}
 
 }
